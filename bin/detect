@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# bin/detect <BUILD_DIR>
+
+# BUILD_DIR=${1:-}
+
+echo "pdftk-java-native"
+exit 0

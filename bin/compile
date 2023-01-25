@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir> <env-dir>
+# This buildpack writes downloads, extracts, and makes available a JAVA Native
+# Image of the pdftk-java tool. The binary will live at `$HOME/bin/pdftk`.
+
+set -o errexit  # always exit on error
+set -o pipefail # don't ignore exit codes when piping output
+set -o nounset  # fail on unset variables
+
+BUILD_DIR=${1:-}
+# CACHE_DIR=${2:-}
+# ENV_DIR=${3:-}
+PKG_DIR="${BUILD_DIR}/pdftk-java-native-tmp"
+ZIP_FILE="${BUILD_DIR}/pdftk-java-native.zip"
+DOWNLOAD_URL="https://gitlab.com/pdftk-java/pdftk/-/jobs/artifacts/v3.3.3/download?job=nativeimage"
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+echo "-----> Installing pdftk-java Native Image"
+echo "Downloading ${DOWNLOAD_URL}" | indent
+curl --location "${DOWNLOAD_URL}" --no-progress-meter --output "${ZIP_FILE}" | indent
+unzip "${ZIP_FILE}" -d "${PKG_DIR}" | indent
+
+mkdir -p "${BUILD_DIR}/bin/"
+cp -a "${PKG_DIR}/build/native-image/pdftk" "${BUILD_DIR}/bin/"
+
+show_version=$("${BUILD_DIR}/bin/pdftk" --version 2>&1 | head --lines 1 | grep --only-matching "[[:digit:]]\{1,\}\.[[:digit:]]\{1,\}\.[[:digit:]]\{1,\}" )
+echo "Package 'pdftk-java' v${show_version} installed to '${BUILD_DIR}/bin/pdftk'." | indent
+
+# Ensure our binary dir is on $PATH at Dyno boot time
+echo "Addding ${BUILD_DIR}/bin to \$PATH via .profile.d" | indent
+mkdir -p "${BUILD_DIR}/.profile.d/"
+
+cat <<EOF >"${BUILD_DIR}"/.profile.d/pdftk-java-native-defaults.sh
+export PATH="\$PATH:\$HOME/bin"
+EOF
+
+# Cleanup after ourselves
+rm "${ZIP_FILE}"
+rm -rf "${PKG_DIR}"
+
+echo "✅ pdftk-java-native done!" | indent
+
+exit 0

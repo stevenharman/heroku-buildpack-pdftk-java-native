@@ -1,0 +1,10 @@
+[buildpack]
+id = "stevenharman/pdftk-java-native"
+version = "0.1.0"
+name = "pdftk-java Native Image"
+homepage = "https://github.com/stevenharman/heroku-buildpack-pdftk-java-native"
+
+[publish]
+
+[publish.Ignore]
+files = []
