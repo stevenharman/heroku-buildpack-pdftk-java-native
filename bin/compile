@@ -9,16 +9,23 @@ set -o nounset  # fail on unset variables
 
 BUILD_DIR=${1:-}
 # CACHE_DIR=${2:-}
-# ENV_DIR=${3:-}
+ENV_DIR=${3:-}
 PKG_DIR="${BUILD_DIR}/pdftk-java-native-tmp"
-ZIP_FILE="${BUILD_DIR}/pdftk-java-native.zip"
-DOWNLOAD_URL="https://gitlab.com/pdftk-java/pdftk/-/jobs/artifacts/v3.3.3/download?job=nativeimage"
+PKG_VERSION="3.3.3"
 
 indent() {
   sed -u 's/^/       /'
 }
 
 echo "-----> Installing pdftk-java Native Image"
+
+if [[ -f "${ENV_DIR}/PDFTK_JAVA_NATIVE_VERSION" ]]; then
+  PKG_VERSION=$(cat "${ENV_DIR}/PDFTK_JAVA_NATIVE_VERSION")
+fi
+
+DOWNLOAD_URL="https://gitlab.com/pdftk-java/pdftk/-/jobs/artifacts/v${PKG_VERSION}/download?job=nativeimage"
+ZIP_FILE="${BUILD_DIR}/pdftk-java-native-v${PKG_VERSION}.zip"
+
 echo "Downloading ${DOWNLOAD_URL}" | indent
 curl --location "${DOWNLOAD_URL}" --no-progress-meter --output "${ZIP_FILE}" | indent
 unzip "${ZIP_FILE}" -d "${PKG_DIR}" | indent
