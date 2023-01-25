@@ -26,12 +26,18 @@ Like so:
 $ heroku config:set PDFTK_JAVA_NATIVE_VERSION=3.3.3
 ```
 
+### Cached versions
+
+This Buildpack will [cache][build-cache] the requested version of the `.zip` file and re-use that between build.
+If you need to force a re-download of the cached file, you'll need to [purge your build cache][build-cache].
+
 ## License
 
 This work is licensed under [MIT License](./LICENSE).
 
 Copyright (c) 2023 Steven Harman
 
+[build-cache]: https://devcenter.heroku.com/articles/slug-compiler#build-cache "Heroku Build cache"
 [buildpacks]: https://devcenter.heroku.com/articles/buildpacks "Heroku Buildpacks"
 [config-vars]: https://devcenter.heroku.com/articles/config-vars "Configuration and Config Vars"
 [prebuilt-bins]: https://gitlab.com/pdftk-java/pdftk#pre-built-binaries "Pre-built binaries for pdftk-java"
