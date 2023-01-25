@@ -28,7 +28,7 @@ ZIP_FILE="${BUILD_DIR}/pdftk-java-native-v${PKG_VERSION}.zip"
 
 echo "Downloading ${DOWNLOAD_URL}" | indent
 curl --location "${DOWNLOAD_URL}" --no-progress-meter --output "${ZIP_FILE}" | indent
-unzip "${ZIP_FILE}" -d "${PKG_DIR}" | indent
+unzip -q "${ZIP_FILE}" -d "${PKG_DIR}" | indent
 
 mkdir -p "${BUILD_DIR}/bin/"
 cp -a "${PKG_DIR}/build/native-image/pdftk" "${BUILD_DIR}/bin/"
