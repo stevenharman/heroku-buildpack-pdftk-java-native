@@ -29,7 +29,7 @@ ZIP_FILE="${CACHE_DIR}/pdftk-java-native-v${PKG_VERSION}.zip"
 # Use a previously downloaded (cached) Zip if we have one.
 mkdir -p "${CACHE_DIR}"
 if [[ -f "${ZIP_FILE}" ]]; then
-  echo "Using cached ${ZIP_FILE}"
+  echo "Using cached ${ZIP_FILE}" | indent
 else
   # Clean up any older/other Zip's we've cached before
   rm -f "${CACHE_DIR}/pdftk-java-native-*.zip"
